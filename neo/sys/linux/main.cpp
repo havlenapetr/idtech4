@@ -28,7 +28,9 @@ If you have questions concerning this license or the applicable additional terms
 #include "../../idlib/precompiled.h"
 #include "../posix/posix_public.h"
 #include "../sys_local.h"
+#ifndef __ANDROID__
 #include "local.h"
+#endif
 
 #include <pthread.h>
 #include <errno.h>
@@ -116,8 +118,10 @@ void *Sys_AsyncThread(void *)
 			Sys_TriggerEvent(TRIGGER_EVENT_ONE);
 		}
 
+#ifndef __ANDROID__
 		// thread exit
 		pthread_testcancel();
+#endif
 	}
 
 	return NULL;
@@ -131,9 +135,17 @@ void *Sys_AsyncThread(void *)
 const char *Sys_DefaultSavePath(void)
 {
 #if defined( ID_DEMO_BUILD )
+#ifdef __ANDROID__
+	savepath = "/sdcard/.doom3-demo";
+#else
 	sprintf(savepath, "%s/.doom3-demo", getenv("HOME"));
+#endif
+#else
+#ifdef __ANDROID__
+	savepath = "/sdcard/.doom3";
 #else
 	sprintf(savepath, "%s/.doom3", getenv("HOME"));
+#endif
 #endif
 	return savepath.c_str();
 }
@@ -599,6 +611,7 @@ void abrt_func(mcheck_status status)
 
 #endif
 
+#ifndef __ANDROID__
 /*
 ===============
 main
@@ -626,3 +639,4 @@ int main(int argc, const char **argv)
 		common->Frame();
 	}
 }
+#endif

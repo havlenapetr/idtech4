@@ -111,6 +111,10 @@ If you have questions concerning this license or the applicable additional terms
 #elif defined(__ppc__)
 #define	BUILD_STRING				"linux-ppc"
 #define CPUSTRING					"ppc"
+#elif defined(__ANDROID__)
+#define	BUILD_STRING				"linux-arm"
+#define BUILD_OS_ID					2
+#define CPUSTRING					"arm"
 #endif
 
 #define _alloca							alloca

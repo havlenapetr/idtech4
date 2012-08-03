@@ -144,7 +144,11 @@ void idSysLocal::DLL_GetFileName(const char *baseName, char *dllName, int maxLen
 #ifdef _WIN32
 	idStr::snPrintf(dllName, maxLength, "%s" CPUSTRING ".dll", baseName);
 #elif defined( __linux__ )
+#ifdef __ANDROID__
+	idStr::snPrintf(dllName, maxLength, "%s" ".so", baseName);
+#else
 	idStr::snPrintf(dllName, maxLength, "%s" CPUSTRING ".so", baseName);
+#endif
 #elif defined( MACOS_X )
 	idStr::snPrintf(dllName, maxLength, "%s" ".dylib", baseName);
 #else

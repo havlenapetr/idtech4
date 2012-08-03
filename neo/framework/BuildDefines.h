@@ -68,7 +68,7 @@ If you have questions concerning this license or the applicable additional terms
 #define ID_ALLOW_CHEATS 0
 #endif
 
-#ifndef ID_ENABLE_CURL
+#if !defined( __ANDROID__ ) && !defined( ID_ENABLE_CURL )
 #define ID_ENABLE_CURL 1
 #endif
 

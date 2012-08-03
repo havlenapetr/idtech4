@@ -338,13 +338,21 @@ static void R_LoadGLSLShader(const char *name, shaderProgram_t *shaderProgram, G
 		case GL_VERTEX_SHADER:
 			// create vertex shader
 			shaderProgram->vertexShader = glCreateShader(GL_VERTEX_SHADER);
+#ifdef __ANDROID__
+			glShaderSource(shaderProgram->vertexShader, 1, (const char **)&buffer, 0);
+#else
 			glShaderSource(shaderProgram->vertexShader, 1, (const GLchar **)&buffer, 0);
+#endif
 			glCompileShader(shaderProgram->vertexShader);
 			break;
 		case GL_FRAGMENT_SHADER:
 			// create fragment shader
 			shaderProgram->fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+#ifdef __ANDROID__
+			glShaderSource(shaderProgram->fragmentShader, 1, (const char **)&buffer, 0);
+#else
 			glShaderSource(shaderProgram->fragmentShader, 1, (const GLchar **)&buffer, 0);
+#endif
 			glCompileShader(shaderProgram->fragmentShader);
 			break;
 		default:
