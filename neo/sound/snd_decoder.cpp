@@ -30,13 +30,8 @@ If you have questions concerning this license or the applicable additional terms
 #pragma hdrstop
 
 #include "snd_local.h"
-#ifdef __ANDROID__
-#include <ivorbiscodec.h>
-#include <ivorbisfile.h>
-#else
 #include <vorbis/codec.h>
 #include <vorbis/vorbisfile.h>
-#endif
 
 
 /*
@@ -248,11 +243,7 @@ int idWaveFile::ReadOGG(byte *pBuffer, int dwSizeToRead, int *pdwSizeRead)
 	OggVorbis_File *ov = (OggVorbis_File *) ogg;
 
 	do {
-#ifdef __ANDROID__
-		int ret = ov_read(ov, bufferPtr, total >= 4096 ? 4096 : total, NULL);
-#else
 		int ret = ov_read(ov, bufferPtr, total >= 4096 ? 4096 : total, Swap_IsBigEndian(), 2, 1, NULL);
-#endif
 
 		if (ret == 0) {
 			break;
