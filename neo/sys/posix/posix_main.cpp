@@ -1118,7 +1118,7 @@ void Sys_GenerateEvents(void)
 low level output
 ===============
 */
-
+#ifndef __ANDROID__
 void Sys_DebugPrintf(const char *fmt, ...)
 {
 	va_list argptr;
@@ -1172,3 +1172,4 @@ void Sys_Error(const char *error, ...)
 
 	Posix_Exit(EXIT_FAILURE);
 }
+#endif

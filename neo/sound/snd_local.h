@@ -30,9 +30,14 @@ If you have questions concerning this license or the applicable additional terms
 #define __SND_LOCAL_H__
 
 // you need the OpenAL headers for build, even if AL is not enabled - http://www.openal.org/
-#if defined( _WIN32 )
+#if defined( _WIN32 ) || defined( __ANDROID__ )
+#ifdef __ANDROID__
+#include <AL/al.h>
+#include <AL/alc.h>
+#else
 #include "../openal/include/al.h"
 #include "../openal/include/alc.h"
+#endif
 #include "../openal/idal.h"
 // broken OpenAL SDK ?
 #define ID_ALCHAR (ALubyte *)
@@ -43,11 +48,7 @@ If you have questions concerning this license or the applicable additional terms
 #else
 #include <AL/al.h>
 #include <AL/alc.h>
-#ifdef __ANDROID__
-#define ID_ALCHAR (ALubyte *)
-#else
 #define ID_ALCHAR
-#endif
 #endif
 #include "../openal/include/efxlib.h"
 

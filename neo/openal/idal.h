@@ -2,7 +2,7 @@
 // C:\Python23\Lib\idlelib\idle.pyw
 // Mon Mar 28 12:31:26 2005
 
-extern ALenum(ALAPIENTRY *idalGetError)(ALvoid);
+extern ALenum(ALAPIENTRY *idalGetError)();
 extern ALvoid(ALAPIENTRY *idalGenBuffers)(ALsizei, ALuint *);
 extern ALboolean(ALAPIENTRY *idalIsSource)(ALuint);
 extern ALvoid(ALAPIENTRY *idalSourceStop)(ALuint);

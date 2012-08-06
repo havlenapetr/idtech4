@@ -98,10 +98,14 @@ If you have questions concerning this license or the applicable additional terms
 #define	WIN32_FAKE_WINDOW_CLASS_NAME	"DOOM3_WGL_FAKE"
 
 // Linux info
-#ifdef ID_DEMO_BUILD
-#define LINUX_DEFAULT_PATH			"/usr/local/games/doom3-demo"
+#ifdef __ANDROID__
+#define LINUX_DEFAULT_PATH				"/sdcard/Android/data/com.idsoftware.doom3"
 #else
-#define LINUX_DEFAULT_PATH			"/usr/local/games/doom3"
+#ifdef ID_DEMO_BUILD
+#define LINUX_DEFAULT_PATH				"/usr/local/games/doom3-demo"
+#else
+#define LINUX_DEFAULT_PATH				"/usr/local/games/doom3"
+#endif
 #endif
 
 // CD Key file info

@@ -41,8 +41,10 @@ If you have questions concerning this license or the applicable additional terms
 #include <GL/glx.h>
 #define GL_APIENTRY	GLAPIENTRY
 #else
+#ifndef __ANDROID__
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
+#endif
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
 #endif

@@ -32,7 +32,7 @@
 LOCAL_PATH := $(call my-dir)
 include $(CLEAR_VARS)
 
-LOCAL_CFLAGS := -fexceptions -frtti
+LOCAL_CPPFLAGS := -fexceptions -frtti
 
 LOCAL_C_INCLUDES := $(JPEG_INCLUDE_DIR)
 

@@ -47,8 +47,8 @@ LOCAL_SRC_FILES += \
     posix/posix_input.cpp \
     posix/posix_net.cpp \
     posix/posix_threads.cpp \
-    posix/posix_main.cpp \
-    posix/posix_signal.cpp
+    posix/posix_signal.cpp \
+    posix/posix_main.cpp
 
 LOCAL_MODULE := libsys
 

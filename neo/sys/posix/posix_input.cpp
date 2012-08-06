@@ -125,8 +125,10 @@ int Sys_PollMouseInputEvents(void)
 	poll_mouse_event_count = 0;
 #endif
 
+#ifndef __ANDROID__
 	// that's OS specific, implemented in osx/ and linux/
 	Posix_PollInput();
+#endif
 
 	return poll_mouse_event_count;
 }

@@ -28,6 +28,14 @@ If you have questions concerning this license or the applicable additional terms
 #include "../idlib/precompiled.h"
 #include "../sound/snd_local.h"
 
+#ifndef AL_API
+#define AL_API
+#endif
+
+#ifndef ALC_API
+#define ALC_API
+#endif
+
 AL_API ALenum AL_APIENTRY alGetError()
 {
 	return AL_NO_ERROR;

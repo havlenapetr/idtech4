@@ -2,7 +2,7 @@
 // C:\Python23\Lib\idlelib\idle.pyw
 // Mon Mar 28 12:31:26 2005
 
-ALenum(ALAPIENTRY *idalGetError)(ALvoid) = NULL;
+ALenum(ALAPIENTRY *idalGetError)() = NULL;
 ALvoid(ALAPIENTRY *idalGenBuffers)(ALsizei, ALuint *) = NULL;
 ALboolean(ALAPIENTRY *idalIsSource)(ALuint) = NULL;
 ALvoid(ALAPIENTRY *idalSourceStop)(ALuint) = NULL;
