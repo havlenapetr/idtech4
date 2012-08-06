@@ -32,7 +32,11 @@
 LOCAL_PATH := $(call my-dir)
 include $(CLEAR_VARS)
 
-LOCAL_CFLAGS := -DID_DEMO_BUILD
+LOCAL_CFLAGS :=
+
+ifeq ($(APP_DEMO),true)
+LOCAL_CFLAGS += -DID_DEMO_BUILD
+endif
 
 LOCAL_C_INCLUDES :=
 

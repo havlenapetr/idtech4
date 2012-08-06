@@ -33,7 +33,11 @@ LOCAL_PATH := $(call my-dir)
 include $(CLEAR_VARS)
 
 LOCAL_CFLAGS := -fexceptions -frtti \
-    -D__DOOM_DLL__ -DID_DEMO_BUILD
+    -D__DOOM_DLL__
+
+ifeq ($(APP_DEMO),true)
+LOCAL_CFLAGS += -DID_DEMO_BUILD
+endif
 
 LOCAL_C_INCLUDES :=
 
