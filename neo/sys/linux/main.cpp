@@ -149,11 +149,13 @@ const char *Sys_DefaultSavePath(void)
 #endif
 	return savepath.c_str();
 }
+
 /*
 ==============
 Sys_EXEPath
 ==============
 */
+#ifndef __ANDROID__
 const char *Sys_EXEPath(void)
 {
 	static char	buf[ 1024 ];
@@ -171,6 +173,7 @@ const char *Sys_EXEPath(void)
 
 	return buf;
 }
+#endif
 
 /*
 ================

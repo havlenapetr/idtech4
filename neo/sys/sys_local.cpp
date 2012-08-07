@@ -145,7 +145,7 @@ void idSysLocal::DLL_GetFileName(const char *baseName, char *dllName, int maxLen
 	idStr::snPrintf(dllName, maxLength, "%s" CPUSTRING ".dll", baseName);
 #elif defined( __linux__ )
 #ifdef __ANDROID__
-	idStr::snPrintf(dllName, maxLength, "%s" ".so", baseName);
+	idStr::snPrintf(dllName, maxLength, "lib/lib%s" ".so", baseName);
 #else
 	idStr::snPrintf(dllName, maxLength, "%s" CPUSTRING ".so", baseName);
 #endif
