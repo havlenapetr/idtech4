@@ -1580,7 +1580,9 @@ void Com_ExecMachineSpec_f(const idCmdArgs &args)
 		cvarSystem->SetCVarInteger("image_downSizeBump", 1, CVAR_ARCHIVE);
 		cvarSystem->SetCVarInteger("image_downSizeSpecularLimit", 64, CVAR_ARCHIVE);
 		cvarSystem->SetCVarInteger("image_downSizeBumpLimit", 256, CVAR_ARCHIVE);
+#ifndef __ANDROID__
 		cvarSystem->SetCVarInteger("r_mode", 3	, CVAR_ARCHIVE);
+#endif
 		cvarSystem->SetCVarInteger("image_useNormalCompression", 2, CVAR_ARCHIVE);
 		cvarSystem->SetCVarInteger("r_multiSamples", 0, CVAR_ARCHIVE);
 	}
