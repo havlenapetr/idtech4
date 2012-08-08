@@ -36,6 +36,7 @@ If you have questions concerning this license or the applicable additional terms
 #include "Simd_SSE2.h"
 #include "Simd_SSE3.h"
 #include "Simd_AltiVec.h"
+#include "Simd_ARM.h"
 
 
 idSIMDProcessor		*processor = NULL;			// pointer to SIMD processor

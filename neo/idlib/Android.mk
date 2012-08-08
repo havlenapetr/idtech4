@@ -77,6 +77,7 @@ LOCAL_SRC_FILES := \
 
 LOCAL_SRC_FILES += \
     math/Simd_Generic.cpp \
+    math/Simd_ARM.cpp \
     math/Vector.cpp \
     Base64.cpp \
     CmdArgs.cpp \

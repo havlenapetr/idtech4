@@ -251,7 +251,11 @@ Sys_GetProcessorId
 */
 cpuid_t Sys_GetProcessorId(void)
 {
+#ifdef __ANDROID__
+	return CPUID_ARM;
+#else
 	return CPUID_GENERIC;
+#endif
 }
 
 /*
@@ -261,7 +265,11 @@ Sys_GetProcessorString
 */
 const char *Sys_GetProcessorString(void)
 {
+#ifdef __ANDROID__
+	return "arm";
+#else
 	return "generic";
+#endif
 }
 
 /*
