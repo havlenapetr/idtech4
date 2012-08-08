@@ -33,6 +33,9 @@ LOCAL_PATH := $(call my-dir)
 include $(CLEAR_VARS)
 
 LOCAL_CFLAGS := -ffast-math -O3 -funroll-loops
+ifeq ($(APP_NEON),true)
+LOCAL_CFLAGS += -mfpu=neon -mfloat-abi=softfp
+endif
 
 LOCAL_C_INCLUDES := $(JPEG_INCLUDE_DIR)
 

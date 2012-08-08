@@ -32,13 +32,18 @@
 LOCAL_PATH := $(call my-dir)
 include $(CLEAR_VARS)
 
-LOCAL_CFLAGS := -fexceptions -frtti \
-    -ffast-math -O3 -funroll-loops \
+LOCAL_CFLAGS := -ffast-math -O3 -funroll-loops \
     -D__DOOM_DLL__
+
+ifeq ($(APP_NEON),true)
+LOCAL_CFLAGS += -mfpu=neon -mfloat-abi=softfp
+endif
 
 ifeq ($(APP_DEMO),true)
 LOCAL_CFLAGS += -DID_DEMO_BUILD
 endif
+
+LOCAL_CPPFLAGS := -fexceptions -frtti
 
 LOCAL_C_INCLUDES :=
 
