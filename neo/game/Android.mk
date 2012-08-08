@@ -32,7 +32,7 @@
 LOCAL_PATH := $(call my-dir)
 include $(CLEAR_VARS)
 
-LOCAL_CFLAGS := -ffast-math -O3 -funroll-loops \
+LOCAL_CFLAGS := -ffast-math -O3 -funroll-loops -Wno-psabi \
     -DGAME_DLL
 
 ifeq ($(APP_NEON),true)
