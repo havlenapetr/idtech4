@@ -594,7 +594,10 @@ void Posix_EarlyInit(void)
 {
 	memset(&asyncThread, 0, sizeof(asyncThread));
 	exit_spawn[0] = '\0';
+	// on android we want to see stack trace
+#ifndef __ANDROID__
 	Posix_InitSigs();
+#endif
 	// set the base time
 	Sys_Milliseconds();
 	Posix_InitPThreads();
