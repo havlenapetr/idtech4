@@ -33,6 +33,7 @@ LOCAL_PATH := $(call my-dir)
 include $(CLEAR_VARS)
 
 LOCAL_CFLAGS := -fexceptions -frtti \
+    -ffast-math -O3 -funroll-loops \
     -DGAME_DLL
 
 ifeq ($(APP_DEMO),true)

@@ -32,6 +32,7 @@
 LOCAL_PATH := $(call my-dir)
 include $(CLEAR_VARS)
 
+LOCAL_CFLAGS := -ffast-math -O3 -funroll-loops
 LOCAL_CPPFLAGS := -fexceptions -frtti
 
 LOCAL_C_INCLUDES := $(JPEG_INCLUDE_DIR)
