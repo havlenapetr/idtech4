@@ -61,7 +61,7 @@ void Sys_InitScanTable(void)
 Sys_AsyncThread
 =================
 */
-void *Sys_AsyncThread(void *)
+void *Sys_AsyncThread(void *p)
 {
 	int now;
 	int next;
@@ -71,6 +71,11 @@ void *Sys_AsyncThread(void *)
 	int ticked, to_ticked;
 	now = Sys_Milliseconds();
 	ticked = now >> 4;
+
+#ifdef __ANDROID__
+	xthreadInfo* threadInfo = static_cast<xthreadInfo*> (p);
+	assert(threadInfo);
+#endif
 
 	while (1) {
 		// sleep
@@ -118,7 +123,11 @@ void *Sys_AsyncThread(void *)
 			Sys_TriggerEvent(TRIGGER_EVENT_ONE);
 		}
 
-#ifndef __ANDROID__
+#ifdef __ANDROID__
+		if (threadInfo->exitRequested) {
+			break;
+		}
+#else
 		// thread exit
 		pthread_testcancel();
 #endif

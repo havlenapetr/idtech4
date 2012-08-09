@@ -499,6 +499,9 @@ typedef struct {
 	const char 	*name;
 	intptr_t	threadHandle;
 	size_t		threadId;
+#ifdef __ANDROID__
+	bool		exitRequested;
+#endif
 } xthreadInfo;
 
 const int MAX_THREADS				= 10;
