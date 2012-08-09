@@ -353,13 +353,16 @@ double Sys_ClockTicksPerSecond(void)
 	static double	ret;
 
 	int		fd, len, pos, end;
-	char	buf[ 4096 ];
 
 	if (init) {
 		return ret;
 	}
 
+#ifdef __ANDROID__
+	fd = open("/sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_max_freq", O_RDONLY);
+#else
 	fd = open("/proc/cpuinfo", O_RDONLY);
+#endif
 
 	if (fd == -1) {
 		common->Printf("couldn't read /proc/cpuinfo\n");
@@ -369,6 +372,20 @@ double Sys_ClockTicksPerSecond(void)
 		return ret;
 	}
 
+#ifdef __ANDROID__
+	char	buf[ 128 ];
+	len = read(fd, buf, 128);
+	close(fd);
+
+	if (len > 0) {
+		ret = atof(buf);
+		common->Printf("/proc/cpuinfo CPU frequency: %g MHz", ret / 1000.0);
+		ret *= 1000;
+		init = true;
+		return ret;
+	}
+#else
+	char	buf[ 4096 ];
 	len = read(fd, buf, 4096);
 	close(fd);
 	pos = 0;
@@ -397,7 +414,7 @@ double Sys_ClockTicksPerSecond(void)
 
 		pos = strchr(buf + pos, '\n') - buf + 1;
 	}
-
+#endif
 	common->Printf("failed parsing /proc/cpuinfo\n");
 	ret = MeasureClockTicks();
 	init = true;
