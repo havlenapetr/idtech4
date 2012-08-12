@@ -2704,7 +2704,11 @@ void idSessionLocal::Frame()
 {
 
 	if (com_asyncSound.GetInteger() == 0) {
+#ifdef __ANDROID__
+		soundSystem->AsyncUpdateWrite(Sys_Milliseconds());
+#else
 		soundSystem->AsyncUpdate(Sys_Milliseconds());
+#endif
 	}
 
 	// Editors that completely take over the game
