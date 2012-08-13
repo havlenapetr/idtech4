@@ -36,9 +36,14 @@ LOCAL_CFLAGS := -ffast-math -O3 -funroll-loops -Wno-psabi
 ifeq ($(APP_NEON),true)
 LOCAL_CFLAGS += -mfpu=neon -mfloat-abi=softfp
 endif
+ifeq ($(ETC1_PRESENTED),true)
+LOCAL_CFLAGS += -DID_ETC1_PRESENTED
+endif
 LOCAL_CPPFLAGS := -fexceptions -frtti
 
-LOCAL_C_INCLUDES := $(JPEG_INCLUDE_DIR)
+LOCAL_C_INCLUDES := \
+    $(JPEG_INCLUDE_DIR) \
+    $(ETC1_INCLUDE_DIR)
 
 LOCAL_ARM_MODE := arm
 

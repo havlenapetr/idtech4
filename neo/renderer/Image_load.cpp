@@ -38,6 +38,10 @@ If you have questions concerning this license or the applicable additional terms
 #define GL_RGB5	GL_RGBA
 #endif
 
+#if defined(ID_ETC1_PRESENTED)
+#include <etc1.h>
+#endif
+
 /*
 PROBLEM: compressed textures may break the zero clamp rule!
 */
@@ -1072,7 +1076,11 @@ void idImage::ImageProgramStringToCompressedFileName(const char *imageProg, char
 	const char	*s;
 	char	*f;
 
+#ifdef __ANDROID__
+	strcpy(fileName, "pkm/");
+#else
 	strcpy(fileName, "dds/");
+#endif
 	f = fileName + strlen(fileName);
 
 	int depth = 0;
@@ -1101,7 +1109,11 @@ void idImage::ImageProgramStringToCompressedFileName(const char *imageProg, char
 	}
 
 	*f++ = 0;
+#ifdef __ANDROID__
+	strcat(fileName, ".pkm");
+#else
 	strcat(fileName, ".dds");
+#endif
 }
 
 /*
@@ -1132,8 +1144,6 @@ versions of everything to speed future load times.
 */
 void idImage::WritePrecompressedImage()
 {
-#if !defined(GL_ES_VERSION_2_0)
-
 	// Always write the precompressed image if we're making a build
 	if (!com_makingBuild.GetBool()) {
 		if (!globalImages->image_writePrecompressedTextures.GetBool() || !globalImages->image_usePrecompressedTextures.GetBool()) {
@@ -1148,15 +1158,15 @@ void idImage::WritePrecompressedImage()
 	char filename[MAX_IMAGE_NAME];
 	ImageProgramStringToCompressedFileName(imgName, filename);
 
-
-
 	int numLevels = NumLevelsForImageSize(uploadWidth, uploadHeight);
-
 	if (numLevels > MAX_TEXTURE_LEVELS) {
 		common->Warning("R_WritePrecompressedImage: level > MAX_TEXTURE_LEVELS for image %s", filename);
 		return;
 	}
 
+#if defined(GL_ES_VERSION_2_0) && defined(ID_ETC1_PRESENTED)
+	common->Warning("R_WritePrecompressedImage: can't compress %s", filename);
+#elif !defined(GL_ES_VERSION_2_0)
 	// glGetTexImage only supports a small subset of all the available internal formats
 	// We have to use BGRA because DDS is a windows based format
 	int altInternalFormat = 0;
