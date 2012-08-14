@@ -31,22 +31,24 @@ If you have questions concerning this license or the applicable additional terms
 
 #include "tr_local.h"
 
-#if defined(GL_ES_VERSION_2_0)
+#if defined( GL_ES_VERSION_2_0 )
 #define GL_RGB8	GL_RGBA
 #define GL_RGBA8	GL_RGBA
-#define GL_ALPHA8 GL_ALPHA
+#define GL_ALPHA8	GL_ALPHA
 #define GL_RGB5	GL_RGBA
 #endif
 
-#if defined(ID_ETC1_PRESENTED)
+#if defined( ID_ETC1_PRESENTED )
 #include <etc1.h>
 #endif
+
+#define MAX(a, b) (((a) > (b)) ? (a) : (b))
 
 /*
 PROBLEM: compressed textures may break the zero clamp rule!
 */
 
-#if !defined(GL_ES_VERSION_2_0)
+#if !defined( GL_ES_VERSION_2_0 )
 static bool FormatIsDXT(int internalFormat)
 {
 	if (internalFormat < GL_COMPRESSED_RGB_S3TC_DXT1_EXT
@@ -78,7 +80,14 @@ Used for determining memory utilization
 int idImage::BitsForInternalFormat(int internalFormat) const
 {
 	switch (internalFormat) {
-#if !defined(GL_ES_VERSION_2_0)
+#if defined( GL_ES_VERSION_2_0 )
+		case GL_COMPRESSED_RGB_PVRTC_2BPPV1_IMG:
+		case GL_COMPRESSED_RGBA_PVRTC_2BPPV1_IMG:
+			return 2;
+		case GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG:
+		case GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG:
+			return 4;
+#else
 		case GL_INTENSITY8:
 		case 1:
 			return 8;
@@ -119,11 +128,7 @@ int idImage::BitsForInternalFormat(int internalFormat) const
 			return 8;			// not sure
 #endif
 		default:
-#if !defined(GL_ES_VERSION_2_0)
 			common->Error("R_BitsForInternalFormat: BAD FORMAT:%i", internalFormat);
-#else
-			return 8;
-#endif
 	}
 
 	return 0;
@@ -242,7 +247,6 @@ This may need to scan six cube map images
 GLenum idImage::SelectInternalFormat(const byte **dataPtrs, int numDataPtrs, int width, int height,
                                      textureDepth_t minimumDepth) const
 {
-#if !defined(GL_ES_VERSION_2_0)
 	int		i, c;
 	const byte	*scan;
 	int		rgbOr, rgbAnd, aOr, aAnd;
@@ -295,6 +299,7 @@ GLenum idImage::SelectInternalFormat(const byte **dataPtrs, int numDataPtrs, int
 		needAlpha = true;
 	}
 
+#if !defined(GL_ES_VERSION_2_0)
 	// catch normal maps first
 	if (minimumDepth == TD_BUMP) {
 #if !defined(GL_ES_VERSION_2_0)
@@ -412,6 +417,10 @@ GLenum idImage::SelectInternalFormat(const byte **dataPtrs, int numDataPtrs, int
 
 	return GL_RGBA4;	// two bytes
 #else
+	if (glConfig.textureCompressionAvailable &&
+			glConfig.textureCompressionPVRAvailable) {
+		return needAlpha ? GL_COMPRESSED_RGBA_PVRTC_2BPPV1_IMG : GL_COMPRESSED_RGB_PVRTC_2BPPV1_IMG;
+	}
 	return GL_RGBA8;	// four bytes
 #endif
 }
@@ -1076,8 +1085,11 @@ void idImage::ImageProgramStringToCompressedFileName(const char *imageProg, char
 	const char	*s;
 	char	*f;
 
-#ifdef __ANDROID__
-	strcpy(fileName, "pkm/");
+#if defined( GL_ES_VERSION_2_0 )
+	if(glConfig.textureCompressionPVRAvailable)
+		strcpy(fileName, "pvr/");
+	else if(glConfig.textureCompressionETC1Available)
+		strcpy(fileName, "pkm/");
 #else
 	strcpy(fileName, "dds/");
 #endif
@@ -1109,8 +1121,11 @@ void idImage::ImageProgramStringToCompressedFileName(const char *imageProg, char
 	}
 
 	*f++ = 0;
-#ifdef __ANDROID__
-	strcat(fileName, ".pkm");
+#if defined( GL_ES_VERSION_2_0 )
+	if(glConfig.textureCompressionPVRAvailable)
+		strcat(fileName, ".pvr");
+	else if(glConfig.textureCompressionETC1Available)
+		strcat(fileName, ".pkm");
 #else
 	strcat(fileName, ".dds");
 #endif
@@ -1164,9 +1179,9 @@ void idImage::WritePrecompressedImage()
 		return;
 	}
 
-#if defined(GL_ES_VERSION_2_0) && defined(ID_ETC1_PRESENTED)
+#if defined( GL_ES_VERSION_2_0 ) && defined( ID_ETC1_PRESENTED )
 	common->Warning("R_WritePrecompressedImage: can't compress %s", filename);
-#elif !defined(GL_ES_VERSION_2_0)
+#elif !defined( GL_ES_VERSION_2_0 )
 	// glGetTexImage only supports a small subset of all the available internal formats
 	// We have to use BGRA because DDS is a windows based format
 	int altInternalFormat = 0;
@@ -1449,7 +1464,6 @@ If fullLoad is false, only the small mip levels of the image will be loaded
 */
 bool idImage::CheckPrecompressedImage(bool fullLoad)
 {
-#if !defined(GL_ES_VERSION_2_0)
 	if (!glConfig.isInitialized || !glConfig.textureCompressionAvailable) {
 		return false;
 	}
@@ -1502,8 +1516,11 @@ bool idImage::CheckPrecompressedImage(bool fullLoad)
 	}
 
 	int	len = f->Length();
-
+#if defined( GL_ES_VERSION_2_0 )
+	if (glConfig.textureCompressionPVRAvailable && len < sizeof(pvrFileHeader_t)) {
+#else
 	if (len < sizeof(ddsFileHeader_t)) {
+#endif
 		fileSystem->CloseFile(f);
 		return false;
 	}
@@ -1518,6 +1535,32 @@ bool idImage::CheckPrecompressedImage(bool fullLoad)
 
 	fileSystem->CloseFile(f);
 
+#if defined( GL_ES_VERSION_2_0 )
+	if (glConfig.textureCompressionPVRAvailable) {
+		pvrFileHeader_t *header = (pvrFileHeader_t *) data;
+
+		unsigned long pvrTag = LittleLong(header->dwVersion);
+		if ('P' != ((pvrTag >>  0) & 0xff) ||
+		    'V' != ((pvrTag >>  8) & 0xff) ||
+		    'R' != ((pvrTag >> 16) & 0xff) ||
+		     3  != ((pvrTag >> 24) & 0xff))
+		{
+			common->Printf("CheckPrecompressedImage( %s ): magic != 'PVR3'\n", imgName.c_str());
+			R_StaticFree(data);
+			return false;
+		}
+
+		unsigned long long pvrPixFormat = header->ullPixelFormat && 0xffffffffffffffffull;
+		if (pvrPixFormat < PVRTC_2bpp_RGB || pvrPixFormat > PVRTC_II_4bpp) {
+			R_StaticFree(data);
+			return false;
+		}
+	} else if (glConfig.textureCompressionETC1Available) {
+		common->Printf("CheckPrecompressedImage( %s ): ETC1 not supported'\n", imgName.c_str());
+		R_StaticFree(data);
+		return false;
+	}
+#else
 	unsigned long magic = LittleLong(*(unsigned long *)data);
 	ddsFileHeader_t	*_header = (ddsFileHeader_t *)(data + 4);
 	int ddspf_dwFlags = LittleLong(_header->ddspf.dwFlags);
@@ -1534,6 +1577,7 @@ bool idImage::CheckPrecompressedImage(bool fullLoad)
 		R_StaticFree(data);
 		return false;
 	}
+#endif
 
 	// upload all the levels
 	UploadPrecompressedImage(data, len);
@@ -1541,9 +1585,6 @@ bool idImage::CheckPrecompressedImage(bool fullLoad)
 	R_StaticFree(data);
 
 	return true;
-#else
-	return false;
-#endif
 }
 
 /*
@@ -1557,7 +1598,144 @@ has completed
 */
 void idImage::UploadPrecompressedImage(byte *data, int len)
 {
-#if !defined(GL_ES_VERSION_2_0)
+#if defined( GL_ES_VERSION_2_0 )
+	if (glConfig.textureCompressionPVRAvailable) {
+		pvrFileHeader_t *header = (pvrFileHeader_t *) data;
+
+		header->dwFlags = LittleLong(header->dwFlags);
+		header->dwColourSpace = LittleLong(header->dwColourSpace);
+		header->dwChannelType = LittleLong(header->dwChannelType);
+		header->dwWidth = LittleLong(header->dwWidth);
+		header->dwHeight = LittleLong(header->dwHeight);
+		header->dwDepth = LittleLong(header->dwDepth);
+		header->dwNumSurfaces = LittleLong(header->dwNumSurfaces);
+		header->dwNumFaces = LittleLong(header->dwNumFaces);
+		header->dwNumMipmaps = LittleLong(header->dwNumMipmaps);
+		header->dwMetaDataSize = LittleLong(header->dwMetaDataSize);
+
+		// PVR files are never row aligned.
+		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+		// Generate the texture number
+		glGenTextures(1, &texnum);
+
+		precompressedFile = true;
+
+		uploadWidth = header->dwWidth;
+		uploadHeight = header->dwHeight;
+
+		unsigned long long pvrPixFormat =
+				header->ullPixelFormat && 0xffffffffffffffffull;
+		switch(pvrPixFormat) {
+			case PVRTC_2bpp_RGB:
+				internalFormat = GL_COMPRESSED_RGB_PVRTC_2BPPV1_IMG;
+				break;
+			case PVRTC_2bpp_RGBA:
+				internalFormat = GL_COMPRESSED_RGBA_PVRTC_2BPPV1_IMG;
+				break;
+			case PVRTC_4bpp_RGB:
+				internalFormat = GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG;
+				break;
+			case PVRTC_4bpp_RGBA:
+				internalFormat = GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG;
+				break;
+			default:
+				common->Error("Unsupported PVR pixel format[%i]!\n",
+						pvrPixFormat);
+		}
+
+		// Check if this is a texture array.
+		if(header->dwNumSurfaces > 1) {
+			//Not supported in OpenGLES 2.0
+			common->Error("Texture arrays are not available in OGLES2.0.\n");
+		}
+
+		type = header->dwNumFaces > 1 ? TT_CUBIC : TT_2D;
+
+		Bind();
+
+		int uw = uploadWidth;
+		int uh = uploadHeight;
+
+		byte* imagedata = data + sizeof(pvrFileHeader_t) + header->dwMetaDataSize;
+
+		for(int mipLevel = 0; mipLevel < header->dwNumMipmaps; mipLevel++) {
+			unsigned long long pixelFormatHigh =
+					header->ullPixelFormat & 0xffffffff00000000ull;
+			// If the pixel format is compressed, get the pixel format's minimum dimensions.
+			unsigned long minWidth = 1, minHeight = 1, minDepth = 1;
+			if (pixelFormatHigh == 0) {
+				switch(header->ullPixelFormat) {
+					case PVRTC_4bpp_RGB:
+					case PVRTC_4bpp_RGBA:
+						minWidth = 8;
+						minHeight = 8;
+						minDepth = 1;
+						break;
+					case PVRTC_2bpp_RGB:
+					case PVRTC_2bpp_RGBA:
+						minWidth = 16;
+						minHeight = 8;
+						minDepth = 1;
+						break;
+					default: // Non-compressed formats
+						common->Error("Compressed format not recognized!\n");
+				}
+			}
+
+			// Get the dimensions of the specified MIP Map level.
+			unsigned long w = MAX(1, header->dwWidth >> mipLevel);
+			unsigned long h = MAX(1, header->dwHeight >> mipLevel);
+			unsigned long d = MAX(1, header->dwDepth >> mipLevel);
+
+			// If pixel format is compressed, the dimensions need to be padded.
+			if (pixelFormatHigh == 0) {
+				w = w + ( (-1 * w) % minWidth);
+				h = h + ( (-1 * h) % minHeight);
+				d = d + ( (-1 * d) % minDepth);
+			}
+
+			unsigned long curMipSize = (BitsForInternalFormat(internalFormat) * w * h * d) / 8;
+
+			GLint target = type == TT_CUBIC ? GL_TEXTURE_CUBE_MAP_POSITIVE_X : GL_TEXTURE_2D;
+			for (int face = 0; face < header->dwNumFaces; face++) {
+				glCompressedTexImage2D(target, mipLevel, internalFormat,
+						uw, uh, 0, curMipSize, imagedata);
+				imagedata += curMipSize;
+				target++;
+			}
+
+			// Reduce the MIP Size.
+			uw = MAX(1, uw >> 1);
+			uh = MAX(1, uh >> 1);
+
+			GL_CheckErrors();
+		}
+
+		GLint target = type == TT_CUBIC ? GL_TEXTURE_CUBE_MAP : GL_TEXTURE_2D;
+		if(header->dwNumMipmaps == 1) {
+			glTexParameteri(target, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		} else {
+			glTexParameteri(target, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
+			glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		}
+
+		if((uploadWidth & (uploadWidth - 1)) | (uploadHeight & (uploadHeight - 1))) {
+			// NPOT textures requires the wrap mode to be set explicitly to
+			// GL_CLAMP_TO_EDGE or the texture will be inconsistent.
+			glTexParameteri(target, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+			glTexParameteri(target, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		} else {
+			glTexParameteri(target, GL_TEXTURE_WRAP_S, GL_REPEAT);
+			glTexParameteri(target, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		}
+
+		GL_CheckErrors();
+	} else if (glConfig.textureCompressionETC1Available) {
+		common->Error("ETC1 compression not supported!\n");
+	}
+#else
 	ddsFileHeader_t	*header = (ddsFileHeader_t *)(data + 4);
 
 	// ( not byte swapping dwReserved1 dwReserved2 )
@@ -1872,23 +2050,25 @@ void idImage::Bind()
 
 	// enable or disable apropriate texture modes
 	if (tmu->textureType != type && (backEnd.glState.currenttmu <	glConfig.maxTextureUnits)) {
-#if !defined(GL_ES_VERSION_2_0)
 		if (tmu->textureType == TT_CUBIC) {
 			glDisable(GL_TEXTURE_CUBE_MAP);
+#if !defined(GL_ES_VERSION_2_0)
 		} else if (tmu->textureType == TT_3D) {
 			glDisable(GL_TEXTURE_3D);
+#endif
 		} else if (tmu->textureType == TT_2D) {
 			glDisable(GL_TEXTURE_2D);
 		}
 
 		if (type == TT_CUBIC) {
 			glEnable(GL_TEXTURE_CUBE_MAP);
+#if !defined(GL_ES_VERSION_2_0)
 		} else if (type == TT_3D) {
 			glEnable(GL_TEXTURE_3D);
+#endif
 		} else if (type == TT_2D) {
 			glEnable(GL_TEXTURE_2D);
 		}
-#endif
 
 		tmu->textureType = type;
 	}
@@ -2289,7 +2469,20 @@ void idImage::Print() const
 	}
 
 	switch (internalFormat) {
-#if !defined(GL_ES_VERSION_2_0)
+#if defined( GL_ES_VERSION_2_0 )
+		case GL_COMPRESSED_RGB_PVRTC_2BPPV1_IMG:
+			common->Printf("PVR2 ");
+			break;
+		case GL_COMPRESSED_RGBA_PVRTC_2BPPV1_IMG:
+			common->Printf("PVRA2");
+			break;
+		case GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG:
+			common->Printf("PVR4 ");
+			break;
+		case GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG:
+			common->Printf("PVRA4");
+			break;
+#else
 		case GL_INTENSITY8:
 		case 1:
 			common->Printf("I     ");

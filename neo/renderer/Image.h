@@ -115,6 +115,36 @@ typedef struct {
 	unsigned long dwReserved2[3];
 } ddsFileHeader_t;
 
+#if defined( GL_ES_VERSION_2_0 )
+
+typedef enum {
+	PVRTC_2bpp_RGB,
+	PVRTC_2bpp_RGBA,
+	PVRTC_4bpp_RGB,
+	PVRTC_4bpp_RGBA,
+	PVRTC_II_2bpp,
+	PVRTC_II_4bpp,
+	PVRTC_ETC1,
+} pvrFilePixelFormat_e;
+
+#pragma pack(push,4)
+typedef struct {
+	unsigned long dwVersion;
+	unsigned long dwFlags;
+	unsigned long long ullPixelFormat;
+	unsigned long dwColourSpace;
+	unsigned long dwChannelType;
+	unsigned long dwHeight;
+	unsigned long dwWidth;
+	unsigned long dwDepth;
+	unsigned long dwNumSurfaces;
+	unsigned long dwNumFaces;
+	unsigned long dwNumMipmaps;
+	unsigned long dwMetaDataSize;
+} pvrFileHeader_t;
+#pragma pack(pop)
+
+#endif // end of GL_ES_VERSION_2_0
 
 // increasing numeric values imply more information is stored
 typedef enum {

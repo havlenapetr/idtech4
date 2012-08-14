@@ -299,7 +299,10 @@ static void R_CheckPortableExtensions(void)
 	} else
 #endif
 	{
-		glConfig.textureCompressionAvailable = false;
+		glConfig.textureCompressionETC1Available = R_CheckExtension("GL_OES_compressed_ETC1_RGB8_texture");
+		glConfig.textureCompressionPVRAvailable = R_CheckExtension("GL_IMG_texture_compression_pvrtc");
+		glConfig.textureCompressionAvailable = glConfig.textureCompressionETC1Available ||
+				glConfig.textureCompressionPVRAvailable;
 	}
 
 #if !defined(GL_ES_VERSION_2_0)
