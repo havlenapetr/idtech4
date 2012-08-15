@@ -32,13 +32,12 @@
 LOCAL_PATH := $(call my-dir)
 include $(CLEAR_VARS)
 
-LOCAL_CFLAGS := -ffast-math -O3 -funroll-loops -Wno-psabi
-ifeq ($(APP_NEON),true)
-LOCAL_CFLAGS += -mfpu=neon -mfloat-abi=softfp
-endif
+LOCAL_CFLAGS := $(GLOBAL_CFLAGS)
+
 ifeq ($(ETC1_PRESENTED),true)
 LOCAL_CFLAGS += -DID_ETC1_PRESENTED
 endif
+
 LOCAL_CPPFLAGS := -fexceptions -frtti
 
 LOCAL_C_INCLUDES := \
