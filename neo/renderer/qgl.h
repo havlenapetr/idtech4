@@ -35,19 +35,21 @@ If you have questions concerning this license or the applicable additional terms
 
 #define GL_GLEXT_PROTOTYPES
 
-#ifdef ID_TARGET_OPENGL
+#if MACOS_X
+#include <OpenGL/gl.h>
+#include <OpenGL/glext.h>
+#define GL_APIENTRY
+#else	// !MACOS_X
+#ifdef __ANDROID__
+#include <GLES2/gl2.h>
+#include <GLES2/gl2ext.h>
+#else	// !__ANDROID__
 #include <GL/gl.h>
 #include <GL/glext.h>
 #include <GL/glx.h>
 #define GL_APIENTRY	GLAPIENTRY
-#else
-#ifndef __ANDROID__
-#include <EGL/egl.h>
-#include <EGL/eglext.h>
-#endif
-#include <GLES2/gl2.h>
-#include <GLES2/gl2ext.h>
-#endif
+#endif	// __ANDROID__
+#endif	// MACOS_X
 
 #include "esUtil.h"
 
