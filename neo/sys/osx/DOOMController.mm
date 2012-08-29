@@ -43,7 +43,6 @@ If you have questions concerning this license or the applicable additional terms
 #import "macosx_sys.h"
 
 #import <fenv.h>
-#import <ucontext.h>
 #import <mach/thread_status.h>
 
 #define	MAX_KEYS		256
@@ -261,6 +260,7 @@ extern void CL_Quit_f(void);
     if (![[NSFileManager defaultManager] changeCurrentDirectoryPath:[[NSBundle mainBundle] resourcePath]]) {
         Sys_Error("Could not access application resources");
     }
+
     //cddir = macosx_scanForLibraryDirectory();
     /*
     do {
@@ -983,7 +983,7 @@ static OSErr DoRegCodeDialog( char* ioRegCode1 )
 Sys_AsyncThread
 =================
 */
-void Sys_AsyncThread( void ) {
+void *Sys_AsyncThread(void *) {
 	while ( 1 ) {
 		usleep( 16666 );
 		common->Async();

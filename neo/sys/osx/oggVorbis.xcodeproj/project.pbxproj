@@ -7,8 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		8125B8820912BA6000492E1F /* ogg.h in Headers */ = {isa = PBXBuildFile; fileRef = 8125B83F0912BA6000492E1F /* ogg.h */; };
-		8125B8830912BA6000492E1F /* os_types.h in Headers */ = {isa = PBXBuildFile; fileRef = 8125B8400912BA6000492E1F /* os_types.h */; };
+		4B9807FB15EEC16600A919EC /* window.c in Sources */ = {isa = PBXBuildFile; fileRef = 4B9807FA15EEC16600A919EC /* window.c */; };
 		8125B8840912BA6000492E1F /* framing.c in Sources */ = {isa = PBXBuildFile; fileRef = 8125B8430912BA6000492E1F /* framing.c */; };
 		8125B8850912BA6000492E1F /* bitwise.c in Sources */ = {isa = PBXBuildFile; fileRef = 8125B8440912BA6000492E1F /* bitwise.c */; };
 		8125B8860912BA6000492E1F /* floor_all.h in Headers */ = {isa = PBXBuildFile; fileRef = 8125B8470912BA6000492E1F /* floor_all.h */; };
@@ -68,16 +67,11 @@
 		8125B8BC0912BA6000492E1F /* vorbisenc.c in Sources */ = {isa = PBXBuildFile; fileRef = 8125B87E0912BA6000492E1F /* vorbisenc.c */; };
 		8125B8BD0912BA6000492E1F /* vorbisfile.c in Sources */ = {isa = PBXBuildFile; fileRef = 8125B87F0912BA6000492E1F /* vorbisfile.c */; };
 		8125B8BE0912BA6000492E1F /* window.h in Headers */ = {isa = PBXBuildFile; fileRef = 8125B8800912BA6000492E1F /* window.h */; };
-		8125B8BF0912BA6000492E1F /* windowvb.c in Sources */ = {isa = PBXBuildFile; fileRef = 8125B8810912BA6000492E1F /* windowvb.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		8125B83C0912BA6000492E1F /* AUTHORS */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = AUTHORS; sourceTree = "<group>"; };
-		8125B83D0912BA6000492E1F /* config_types.h.in */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = config_types.h.in; sourceTree = "<group>"; };
-		8125B83E0912BA6000492E1F /* COPYING */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = COPYING; sourceTree = "<group>"; };
-		8125B83F0912BA6000492E1F /* ogg.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ogg.h; sourceTree = "<group>"; };
-		8125B8400912BA6000492E1F /* os_types.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = os_types.h; sourceTree = "<group>"; };
-		8125B8410912BA6000492E1F /* README */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = README; sourceTree = "<group>"; };
+		4B98079A15EEBBE600A919EC /* window.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = window.c; path = ../../../../../../../../projects/app/android/adoom3/idtech4/third_party/libvorbis/lib/window.c; sourceTree = SOURCE_ROOT; };
+		4B9807FA15EEC16600A919EC /* window.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = window.c; sourceTree = "<group>"; };
 		8125B8430912BA6000492E1F /* framing.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = framing.c; sourceTree = "<group>"; };
 		8125B8440912BA6000492E1F /* bitwise.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = bitwise.c; sourceTree = "<group>"; };
 		8125B8470912BA6000492E1F /* floor_all.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = floor_all.h; sourceTree = "<group>"; };
@@ -138,7 +132,6 @@
 		8125B87E0912BA6000492E1F /* vorbisenc.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = vorbisenc.c; sourceTree = "<group>"; };
 		8125B87F0912BA6000492E1F /* vorbisfile.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = vorbisfile.c; sourceTree = "<group>"; };
 		8125B8800912BA6000492E1F /* window.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = window.h; sourceTree = "<group>"; };
-		8125B8810912BA6000492E1F /* windowvb.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = windowvb.c; sourceTree = "<group>"; };
 		D2AAC046055464E500DB518D /* liboggVorbis_nopic.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = liboggVorbis_nopic.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -165,9 +158,8 @@
 		08FB7795FE84155DC02AAC07 /* Source */ = {
 			isa = PBXGroup;
 			children = (
-				8125B83B0912BA6000492E1F /* ogg */,
-				8125B8420912BA6000492E1F /* oggsrc */,
-				8125B8450912BA6000492E1F /* vorbissrc */,
+				8125B8420912BA6000492E1F /* libogg */,
+				8125B8450912BA6000492E1F /* libvorbis */,
 			);
 			name = Source;
 			sourceTree = "<group>";
@@ -180,35 +172,22 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		8125B83B0912BA6000492E1F /* ogg */ = {
-			isa = PBXGroup;
-			children = (
-				8125B83C0912BA6000492E1F /* AUTHORS */,
-				8125B83D0912BA6000492E1F /* config_types.h.in */,
-				8125B83E0912BA6000492E1F /* COPYING */,
-				8125B83F0912BA6000492E1F /* ogg.h */,
-				8125B8400912BA6000492E1F /* os_types.h */,
-				8125B8410912BA6000492E1F /* README */,
-			);
-			name = ogg;
-			path = ../../sound/OggVorbis/ogg;
-			sourceTree = SOURCE_ROOT;
-		};
-		8125B8420912BA6000492E1F /* oggsrc */ = {
+		8125B8420912BA6000492E1F /* libogg */ = {
 			isa = PBXGroup;
 			children = (
 				8125B8430912BA6000492E1F /* framing.c */,
 				8125B8440912BA6000492E1F /* bitwise.c */,
 			);
-			name = oggsrc;
-			path = ../../sound/OggVorbis/oggsrc;
+			name = libogg;
+			path = ../../../../../../../../projects/app/android/adoom3/idtech4/external/libogg;
 			sourceTree = SOURCE_ROOT;
 		};
-		8125B8450912BA6000492E1F /* vorbissrc */ = {
+		8125B8450912BA6000492E1F /* libvorbis */ = {
 			isa = PBXGroup;
 			children = (
 				8125B8460912BA6000492E1F /* modes */,
 				8125B8580912BA6000492E1F /* analysis.c */,
+				4B9807FA15EEC16600A919EC /* window.c */,
 				8125B8590912BA6000492E1F /* backends.h */,
 				8125B85A0912BA6000492E1F /* bitrate.c */,
 				8125B85B0912BA6000492E1F /* bitrate.h */,
@@ -249,15 +228,15 @@
 				8125B87E0912BA6000492E1F /* vorbisenc.c */,
 				8125B87F0912BA6000492E1F /* vorbisfile.c */,
 				8125B8800912BA6000492E1F /* window.h */,
-				8125B8810912BA6000492E1F /* windowvb.c */,
 			);
-			name = vorbissrc;
-			path = ../../sound/OggVorbis/vorbissrc;
+			name = libvorbis;
+			path = ../../../../../../../../projects/app/android/adoom3/idtech4/external/libvorbis/lib;
 			sourceTree = SOURCE_ROOT;
 		};
 		8125B8460912BA6000492E1F /* modes */ = {
 			isa = PBXGroup;
 			children = (
+				4B98079A15EEBBE600A919EC /* window.c */,
 				8125B8470912BA6000492E1F /* floor_all.h */,
 				8125B8480912BA6000492E1F /* psych_11.h */,
 				8125B8490912BA6000492E1F /* psych_16.h */,
@@ -286,8 +265,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8125B8820912BA6000492E1F /* ogg.h in Headers */,
-				8125B8830912BA6000492E1F /* os_types.h in Headers */,
 				8125B8860912BA6000492E1F /* floor_all.h in Headers */,
 				8125B8870912BA6000492E1F /* psych_11.h in Headers */,
 				8125B8880912BA6000492E1F /* psych_16.h in Headers */,
@@ -358,7 +335,6 @@
 			};
 			buildConfigurationList = 8125B8350912BA3100492E1F /* Build configuration list for PBXProject "oggVorbis" */;
 			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
 			hasScannedForEncodings = 1;
 			knownRegions = (
 				English,
@@ -403,7 +379,7 @@
 				8125B8BB0912BA6000492E1F /* synthesis.c in Sources */,
 				8125B8BC0912BA6000492E1F /* vorbisenc.c in Sources */,
 				8125B8BD0912BA6000492E1F /* vorbisfile.c in Sources */,
-				8125B8BF0912BA6000492E1F /* windowvb.c in Sources */,
+				4B9807FB15EEC16600A919EC /* window.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -468,9 +444,10 @@
 				GCC_MODEL_TUNING = "";
 				GCC_ONE_BYTE_BOOL = YES;
 				GCC_OPTIMIZATION_LEVEL = 1;
-				HEADER_SEARCH_PATHS = ../../sound/OggVorbis/vorbissrc/;
+				HEADER_SEARCH_PATHS = "";
 				MACOSX_DEPLOYMENT_TARGET = 10.5;
 				SDKROOT = macosx10.5;
+				USER_HEADER_SEARCH_PATHS = "../../../external/libvorbis/lib ../../../external/libvorbis/include ../../../external/libogg/include";
 				VALID_ARCHS = i386;
 			};
 			name = Debug;
@@ -483,7 +460,7 @@
 				GCC_MODEL_TUNING = "";
 				GCC_ONE_BYTE_BOOL = YES;
 				GCC_OPTIMIZATION_LEVEL = 3;
-				HEADER_SEARCH_PATHS = ../../sound/OggVorbis/vorbissrc/;
+				HEADER_SEARCH_PATHS = "";
 				MACOSX_DEPLOYMENT_TARGET = 10.5;
 				OTHER_CFLAGS = (
 					"-finline",
@@ -496,6 +473,7 @@
 					"-fno-common",
 				);
 				SDKROOT = macosx10.5;
+				USER_HEADER_SEARCH_PATHS = "../../../third_party/libogg/include ../../../third_party/libvorbis/include";
 				VALID_ARCHS = i386;
 			};
 			name = Release;

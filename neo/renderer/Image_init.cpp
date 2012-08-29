@@ -1500,7 +1500,7 @@ void idImageManager::SetNormalPalette(void)
 		return;
 	}
 
-#if !defined(GL_ES_VERSION_2_0)
+#if 0
 	glColorTableEXT(GL_SHARED_TEXTURE_PALETTE_EXT,
 	                 GL_RGB,
 	                 256,

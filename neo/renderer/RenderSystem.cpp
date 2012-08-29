@@ -573,8 +573,6 @@ void idRenderSystemLocal::SetBackEndRenderer()
 		return;
 	}
 
-	backEndRenderer = BE_BAD;
-
 	if (idStr::Icmp(r_renderer.GetString(), "arb2") == 0) {
 		if (glConfig.allowARB2Path) {
 			backEndRenderer = BE_ARB2;
@@ -583,6 +581,8 @@ void idRenderSystemLocal::SetBackEndRenderer()
 		if (glConfig.allowGLSLPath) {
 			backEndRenderer = BE_GLSL;
 		}
+	} else {
+		backEndRenderer = BE_BAD;
 	}
 
 	backEndRendererMaxLight = 1.0;

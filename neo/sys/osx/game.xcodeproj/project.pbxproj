@@ -629,7 +629,6 @@
 			};
 			buildConfigurationList = 81225A280912C3A4005D34B9 /* Build configuration list for PBXProject "game" */;
 			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
 			hasScannedForEncodings = 1;
 			knownRegions = (
 				English,

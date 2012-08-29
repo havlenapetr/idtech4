@@ -507,3 +507,7 @@ bool Sys_LoadOpenAL(void)
 
 	return true;
 }
+
+void Sys_FreeOpenAL(void)
+{
+}

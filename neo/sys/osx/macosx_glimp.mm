@@ -75,9 +75,9 @@ CheckErrors
 void CheckErrors( void ) {		
 	GLenum   err;
 
-	err = qglGetError();
+	err = glGetError();
 	if ( err != GL_NO_ERROR ) {
-		common->Error( "glGetError: %s\n", qglGetString( err ) );
+		common->Error( "glGetError: %s\n", glGetString( err ) );
 	}
 }
 
@@ -122,12 +122,12 @@ bool GLimp_SetMode(  glimpParms_t parms ) {
 	glConfig.isFullscreen = parms.fullScreen;
     
 	// draw something to show that GL is alive	
-	qglClearColor( 0.5, 0.5, 0.7, 0 );
-	qglClear( GL_COLOR_BUFFER_BIT );
+	glClearColor( 0.5, 0.5, 0.7, 0 );
+	glClear( GL_COLOR_BUFFER_BIT );
 	GLimp_SwapBuffers();
         
-	qglClearColor( 0.5, 0.5, 0.7, 0 );
-	qglClear( GL_COLOR_BUFFER_BIT );
+	glClearColor( 0.5, 0.5, 0.7, 0 );
+	glClear( GL_COLOR_BUFFER_BIT );
 	GLimp_SwapBuffers();
 
 	Sys_UnfadeScreen( Sys_DisplayToUse(), NULL );
@@ -423,7 +423,7 @@ static bool CreateGameWindow(  glimpParms_t parms ) {
 // This can be used to temporarily disassociate the GL context from the screen so that CoreGraphics can be used to draw to the screen.
 void Sys_PauseGL () {
 	if (!glw_state.glPauseCount) {
-		qglFinish (); // must do this to ensure the queue is complete
+		glFinish (); // must do this to ensure the queue is complete
         
 		// Have to call both to actually deallocate kernel resources and free the NSSurface
 		CGLClearDrawable(OSX_GetCGLContext());
@@ -484,10 +484,10 @@ bool GLimp_Init( glimpParms_t parms ) {
 	common->Printf(  "------------------\n" );
 
 	// get our config strings
-	glConfig.vendor_string = (const char *)qglGetString( GL_VENDOR );
-	glConfig.renderer_string = (const char *)qglGetString( GL_RENDERER );
-	glConfig.version_string = (const char *)qglGetString( GL_VERSION );
-	glConfig.extensions_string = (const char *)qglGetString( GL_EXTENSIONS );
+	glConfig.vendor_string = (const char *)glGetString( GL_VENDOR );
+	glConfig.renderer_string = (const char *)glGetString( GL_RENDERER );
+	glConfig.version_string = (const char *)glGetString( GL_VERSION );
+	glConfig.extensions_string = (const char *)glGetString( GL_EXTENSIONS );
 
 	//
 	// chipset specific configuration
@@ -518,10 +518,6 @@ bool GLimp_Init( glimpParms_t parms ) {
 ** function and instead do a call to GLimp_SwapBuffers.
 */
 void GLimp_SwapBuffers( void ) {
-	if ( r_swapInterval.IsModified() ) {
-		r_swapInterval.ClearModified();
-	}
-
 #if !defined(NDEBUG) && defined(QGL_CHECK_GL_ERRORS)
 	QGLCheckError("GLimp_EndFrame");
 #endif
@@ -689,12 +685,14 @@ static void _endPass (void) {
 }
 
 GLuint glGenFragmentShadersATI (GLuint ID) {
-	qglGenProgramsARB(1, &ID);
+	glGenProgramsARB(1, &ID);
 	return ID;
 }
 
 void glBindFragmentShaderATI (GLuint ID) {
-	qglBindProgramARB(GL_TEXT_FRAGMENT_SHADER_ATI, ID);
+#if 0
+	glBindProgramARB(GL_TEXT_FRAGMENT_SHADER_ATI, ID);
+#endif
 }
 
 void glDeleteFragmentShaderATI (GLuint ID) {
@@ -757,9 +755,10 @@ void glEndFragmentShaderATI (void) {
 		strcat(fragString, sPassString[1]);
 		strcat(fragString, "EndPass;\n");
 	}
-
-	qglProgramStringARB(GL_TEXT_FRAGMENT_SHADER_ATI, GL_PROGRAM_FORMAT_ASCII_ARB, strlen(fragString), fragString);
-	qglGetIntegerv( GL_PROGRAM_ERROR_POSITION_ARB, &errPos );
+#if 0
+	glProgramStringARB(GL_TEXT_FRAGMENT_SHADER_ATI, GL_PROGRAM_FORMAT_ASCII_ARB, strlen(fragString), fragString);
+#endif
+	glGetIntegerv( GL_PROGRAM_ERROR_POSITION_ARB, &errPos );
 	if(errPos != -1) {
 		const GLubyte *errString = glGetString(GL_PROGRAM_ERROR_STRING_ARB);
 		common->Warning("WARNING: glError at %d:%s when compiling atiFragmentShader %s", errPos, errString, fragString);
@@ -768,6 +767,7 @@ void glEndFragmentShaderATI (void) {
 
 
 void glSetFragmentShaderConstantATI (GLuint num, const GLfloat *val) {
+#if 0
 	int constNum = num-GL_CON_0_ATI;
 	if (sGeneratingProgram) {
 		char str[128];
@@ -783,10 +783,11 @@ void glSetFragmentShaderConstantATI (GLuint num, const GLfloat *val) {
 		// So, we cache those values and only set the constants if they are different.
 		if (memcmp (val, sConstVal[constNum], sizeof(GLfloat)*8*4) != 0)
 		{
-			qglProgramEnvParameter4fvARB (GL_TEXT_FRAGMENT_SHADER_ATI, num-GL_CON_0_ATI, val);
+			glProgramEnvParameter4fvARB (GL_TEXT_FRAGMENT_SHADER_ATI, num-GL_CON_0_ATI, val);
 			memcpy (sConstVal[constNum], val, sizeof(GLfloat)*8*4);
 		}
 	}
+#endif
 }
 
 char *makeArgStr(GLuint arg) {
@@ -795,7 +796,8 @@ char *makeArgStr(GLuint arg) {
 	static char str[128];
 	
 	strcpy (str, "");
-	
+
+#if 0
 	if ( arg >= GL_REG_0_ATI && arg <= GL_REG_5_ATI ) {
 		sprintf(str, "r%d", arg - GL_REG_0_ATI);
 	} else if(arg >= GL_CON_0_ATI && arg <= GL_CON_7_ATI) {
@@ -804,12 +806,16 @@ char *makeArgStr(GLuint arg) {
 			sConst[arg - GL_CON_0_ATI] = 1;
 		}
 		sprintf(str, "c%d", arg - GL_CON_0_ATI);
-	} else if( arg >= GL_TEXTURE0_ARB && arg <= GL_TEXTURE31_ARB ) {
+	} else
+#endif
+	if( arg >= GL_TEXTURE0_ARB && arg <= GL_TEXTURE31_ARB ) {
 		sprintf(str, "t%d", arg - GL_TEXTURE0_ARB);
 	} else if( arg == GL_PRIMARY_COLOR_ARB ) {
-		strcpy(str, "color0");	
+		strcpy(str, "color0");
+#if 0
 	} else if(arg == GL_SECONDARY_INTERPOLATOR_ATI) {
 		strcpy(str, "color1");
+#endif
 	} else if (arg == GL_ZERO) {
 		strcpy(str, "0");
 	} else if (arg == GL_ONE) {
@@ -825,6 +831,7 @@ void glPassTexCoordATI (GLuint dst, GLuint coord, GLenum swizzle) {
 	_endPass();
 
 	switch(swizzle) {
+#if 0
 		case GL_SWIZZLE_STR_ATI:
 			sprintf(str, "    PassTexCoord r%d, %s.str;\n", dst - GL_REG_0_ATI, makeArgStr(coord));
 			break;
@@ -837,6 +844,7 @@ void glPassTexCoordATI (GLuint dst, GLuint coord, GLenum swizzle) {
 		case GL_SWIZZLE_STQ_DQ_ATI:
 			sprintf(str, "    PassTexCoord r%d, %s.stq_dq;\n", dst - GL_REG_0_ATI, makeArgStr(coord));
 			break;
+#endif
 		default:
 			common->Warning("glPassTexCoordATI invalid swizzle;");
 			break;
@@ -849,6 +857,7 @@ void glSampleMapATI (GLuint dst, GLuint interp, GLenum swizzle) {
 	_endPass();
 
 	switch(swizzle) {
+#if 0
 		case GL_SWIZZLE_STR_ATI:
 			sprintf(str, "    SampleMap r%d, %s.str;\n", dst - GL_REG_0_ATI, makeArgStr(interp));
 			break;
@@ -861,6 +870,7 @@ void glSampleMapATI (GLuint dst, GLuint interp, GLenum swizzle) {
 		case GL_SWIZZLE_STQ_DQ_ATI:
 			sprintf(str, "    SampleMap r%d, %s.stq_dq;\n", dst - GL_REG_0_ATI, makeArgStr(interp));
 			break;
+#endif
 		default:
 			common->Warning("glSampleMapATI invalid swizzle;");
 			break;
@@ -899,12 +909,14 @@ char *makeMaskStr(GLuint mask) {
 			break;
 		default:
 			strcpy(str, ".");
+#if 0
 			if( mask & GL_RED_BIT_ATI )
 				strcat(str, "r");
 			if( mask & GL_GREEN_BIT_ATI )
 				strcat(str, "g");
 			if( mask & GL_BLUE_BIT_ATI )
 				strcat(str, "b");
+#endif
 			break;
 	}
 		
@@ -922,6 +934,7 @@ char *makeDstModStr(GLuint mod) {
 		str[0] = '\0';
 		return str;
 	}
+#if 0
 	if( mod & GL_2X_BIT_ATI) {
 		strcat(str, ".2x");
 	}
@@ -949,6 +962,7 @@ char *makeDstModStr(GLuint mod) {
 	if( mod & GL_EIGHTH_BIT_ATI) {
 		strcat(str, ".eighth");
 	}
+#endif
 
 	return str;
 }	
@@ -964,6 +978,7 @@ char *makeArgModStr(GLuint mod) {
 		str[0] = '\0';
 		return str;
 	}
+#if 0
 	if( mod & GL_NEGATE_BIT_ATI) {
 		strcat(str, ".neg");
 	}
@@ -979,6 +994,7 @@ char *makeArgModStr(GLuint mod) {
 	if( mod & GL_COMP_BIT_ATI) {
 		strcat(str, ".comp");
 	}
+#endif
 		
 	return str;
 }
@@ -989,10 +1005,12 @@ void glColorFragmentOp1ATI (GLenum op, GLuint dst, GLuint dstMask, GLuint dstMod
 	sOpUsed = 1;
 	
 	switch(op) {
+#if 0
 		// Unary operators
 		case GL_MOV_ATI:
 			sprintf(str, "    MOV r%d", dst - GL_REG_0_ATI);
 			break;
+#endif
 		default:
 			common->Warning("glColorFragmentOp1ATI invalid op;\n");
 			break;
@@ -1029,6 +1047,7 @@ void glColorFragmentOp2ATI (GLenum op, GLuint dst, GLuint dstMask, GLuint dstMod
 	sOpUsed = 1;
 		
 	switch(op) {
+#if 0
 		// Unary operators - fall back to Op1 routine.
 		case GL_MOV_ATI:
 			glColorFragmentOp1ATI(op, dst, dstMask, dstMod, arg1, arg1Rep, arg1Mod);
@@ -1050,6 +1069,7 @@ void glColorFragmentOp2ATI (GLenum op, GLuint dst, GLuint dstMask, GLuint dstMod
 		case GL_DOT4_ATI:
 			sprintf(str, "    DOT4 r%d", dst - GL_REG_0_ATI);
 			break;
+#endif
 		default:
 			common->Warning("glColorFragmentOp2ATI invalid op;");
 			break;
@@ -1090,6 +1110,7 @@ void glColorFragmentOp3ATI (GLenum op, GLuint dst, GLuint dstMask, GLuint dstMod
 	sOpUsed = 1;
 	
 	switch(op) {
+#if 0
 		// Unary operators - fall back to Op1 routine.
 		case GL_MOV_ATI:
 			glColorFragmentOp1ATI(op, dst, dstMask, dstMod, arg1, arg1Rep, arg1Mod);
@@ -1120,6 +1141,7 @@ void glColorFragmentOp3ATI (GLenum op, GLuint dst, GLuint dstMask, GLuint dstMod
 		case GL_DOT2_ADD_ATI:
 			sprintf(str, "    DOT2ADD r%d", dst - GL_REG_0_ATI);
 			break;
+#endif
 		default:
 			common->Warning("glColorFragmentOp3ATI invalid op;");
 			break;

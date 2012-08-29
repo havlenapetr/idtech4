@@ -775,7 +775,6 @@
 			};
 			buildConfigurationList = 81C857270912ACE80095BC33 /* Build configuration list for PBXProject "idlib" */;
 			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
 			hasScannedForEncodings = 1;
 			knownRegions = (
 				English,

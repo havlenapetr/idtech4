@@ -521,16 +521,17 @@ void R_InitOpenGL(void)
 	// one of the paths if there was an error
 #if !defined(GL_ES_VERSION_2_0)
 	R_ARB2_Init();
-#endif
+#else
 	R_GLSL_Init();
+#endif
 
 #if !defined(GL_ES_VERSION_2_0)
 	cmdSystem->AddCommand("reloadARBprograms", R_ReloadARBPrograms_f, CMD_FL_RENDERER, "reloads ARB programs");
 	R_ReloadARBPrograms_f(idCmdArgs());
-#endif
-
+#else
 	cmdSystem->AddCommand("reloadGLSLprograms", R_ReloadGLSLPrograms_f, CMD_FL_RENDERER, "reloads GLSL programs");
 	R_ReloadGLSLPrograms_f(idCmdArgs());
+#endif
 
 	// allocate the frame data, which may be more if smp is enabled
 	R_InitFrameData();

@@ -38,6 +38,18 @@ If you have questions concerning this license or the applicable additional terms
 #if MACOS_X
 #include <OpenGL/gl.h>
 #include <OpenGL/glext.h>
+#if !defined( GL_COLOR_INDEX8_EXT )
+#define GL_COLOR_INDEX8_EXT 0x80E5
+#endif
+#if !defined( glColorTableEXT )
+#define glColorTableEXT glColorTable
+#endif
+#if !defined( glDepthRangef )
+#define glDepthRangef glDepthRange
+#endif
+#if !defined( glClearDepthf )
+#define glClearDepthf glClearDepth
+#endif
 #define GL_APIENTRY
 #else	// !MACOS_X
 #ifdef __ANDROID__
@@ -55,13 +67,13 @@ If you have questions concerning this license or the applicable additional terms
 
 typedef void (*GLExtension_t)(void);
 
-#ifdef __cplusplus
+#if defined( __cplusplus )
 extern "C" {
 #endif
 
-	GLExtension_t GLimp_ExtensionPointer(const char *name);
+GLExtension_t GLimp_ExtensionPointer(const char *name);
 
-#ifdef __cplusplus
+#if defined( __cplusplus )
 }
 #endif
 

@@ -354,7 +354,7 @@ void R_LoadARBProgram(int progIndex)
 {
 	int		ofs;
 	int		err;
-	idStr	fullPath = "gl2progs/";
+	idStr	fullPath = "glprogs/";
 	fullPath += progs[progIndex].name;
 	char	*fileBuffer;
 	char	*buffer;
@@ -531,19 +531,13 @@ void R_ARB2_Init(void)
 {
 	glConfig.allowARB2Path = false;
 
-#if !defined(GL_ES_VERSION_2_0)
 	common->Printf("---------- R_ARB2_Init ----------\n");
-
 	if (!glConfig.ARBVertexProgramAvailable || !glConfig.ARBFragmentProgramAvailable) {
-		common->Printf("Not available.\n");
+		common->Printf("--------- Not available ---------\n");
 		return;
 	}
-
-	common->Printf("Available.\n");
-
-	common->Printf("---------------------------------\n");
+	common->Printf("----------- Available -----------\n");
 
 	glConfig.allowARB2Path = true;
-#endif
 }
 
