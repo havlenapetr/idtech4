@@ -494,9 +494,12 @@ bool GLimp_Init( glimpParms_t parms ) {
 	//
 	buf = (char *)malloc(strlen(glConfig.renderer_string) + 1);
 	strcpy( buf, glConfig.renderer_string );
-
-	//	Cvar_Set( "r_lastValidRenderer", glConfig.renderer_string );
 	free(buf);
+
+	cvarSystem->SetCVarBool( "r_skipBackEnd", true );
+#if 0
+    cvarSystem->SetCVarBool( "com_speeds",  true );
+#endif
 
 	GLW_InitExtensions();
 

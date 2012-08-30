@@ -50,6 +50,14 @@ If you have questions concerning this license or the applicable additional terms
 #if !defined( glClearDepthf )
 #define glClearDepthf glClearDepth
 #endif
+#if defined(GL_ES_VERSION_2_0)
+#define GL_DEPTH_COMPONENT24_OES GL_DEPTH_COMPONENT24
+#define GL_STENCIL_INDEX4_OES GL_STENCIL_INDEX
+#define GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG 0x8C00
+#define GL_COMPRESSED_RGB_PVRTC_2BPPV1_IMG 0x8C01
+#define GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG 0x8C02
+#define GL_COMPRESSED_RGBA_PVRTC_2BPPV1_IMG 0x8C03
+#endif
 #define GL_APIENTRY
 #else	// !MACOS_X
 #ifdef __ANDROID__
