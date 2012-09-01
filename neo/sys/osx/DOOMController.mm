@@ -43,7 +43,6 @@ If you have questions concerning this license or the applicable additional terms
 #import "macosx_sys.h"
 
 #import <fenv.h>
-#import <ucontext.h>
 #import <mach/thread_status.h>
 
 #define	MAX_KEYS		256
@@ -983,7 +982,7 @@ static OSErr DoRegCodeDialog( char* ioRegCode1 )
 Sys_AsyncThread
 =================
 */
-void Sys_AsyncThread( void ) {
+void *Sys_AsyncThread(void *) {
 	while ( 1 ) {
 		usleep( 16666 );
 		common->Async();
